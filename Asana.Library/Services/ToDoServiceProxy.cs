@@ -10,13 +10,15 @@ namespace Asana.Library.Services
     public class ToDoServiceProxy
     {
         private List<ToDo> _toDoList;
-        public List<ToDo> ToDos { 
+        public List<ToDo> ToDos
+        {
             get
             {
                 return _toDoList.Take(100).ToList();
             }
 
-            private set {
+            private set
+            {
                 if (value != _toDoList)
                 {
                     _toDoList = value;
@@ -42,7 +44,7 @@ namespace Asana.Library.Services
         {
             get
             {
-                if(ToDos.Any())
+                if (ToDos.Any())
                 {
                     return ToDos.Select(t => t.Id).Max() + 1;
                 }
@@ -54,7 +56,7 @@ namespace Asana.Library.Services
         {
             get
             {
-                if(instance == null)
+                if (instance == null)
                 {
                     instance = new ToDoServiceProxy();
                 }
@@ -62,9 +64,10 @@ namespace Asana.Library.Services
                 return instance;
             }
         }
+
         public ToDo? AddOrUpdate(ToDo? toDo)
         {
-            if(toDo != null && toDo.Id == 0)
+            if (toDo != null && toDo.Id == 0)
             {
                 toDo.Id = nextKey;
                 _toDoList.Add(toDo);
@@ -81,9 +84,9 @@ namespace Asana.Library.Services
             }
             else
             {
-                ToDos.Where(t => (t != null) && !(t?.IsCompleted ?? false))
-                                .ToList()
-                                .ForEach(Console.WriteLine);
+                ToDos.Where(t => (t != null) && !(t.IsCompleted))
+                     .ToList()
+                     .ForEach(Console.WriteLine);
             }
         }
 
@@ -101,5 +104,79 @@ namespace Asana.Library.Services
             _toDoList.Remove(toDo);
         }
 
+        public bool DeleteToDo(int id)
+        {
+            var todo = _toDoList.FirstOrDefault(t => t.Id == id);
+            if (todo != null)
+            {
+                _toDoList.Remove(todo);
+                var project = _projects.FirstOrDefault(p => p.Id == todo.ProjectId);
+                project?.ToDoIds.Remove(id);
+                UpdateProjectCompletion(project);
+                return true;
+            }
+            return false;
+        }
+
+        // === Project Functionality Below ===
+
+        private List<Project> _projects = new();
+        private int nextProjectKey => _projects.Any() ? _projects.Max(p => p.Id) + 1 : 1;
+
+        public Project AddProject(string name, string description)
+        {
+            var project = new Project
+            {
+                Id = nextProjectKey,
+                Name = name,
+                Description = description
+            };
+            _projects.Add(project);
+            return project;
+        }
+
+        public bool DeleteProject(int id)
+        {
+            var project = _projects.FirstOrDefault(p => p.Id == id);
+            if (project != null)
+            {
+                _projects.Remove(project);
+                _toDoList.RemoveAll(t => t.ProjectId == id);
+                return true;
+            }
+            return false;
+        }
+
+        public List<Project> GetAllProjects() => _projects;
+
+        public bool UpdateProject(Project updatedProject)
+        {
+            var project = _projects.FirstOrDefault(p => p.Id == updatedProject.Id);
+            if (project != null)
+            {
+                project.Name = updatedProject.Name;
+                project.Description = updatedProject.Description;
+                return true;
+            }
+            return false;
+        }
+
+        public List<ToDo> GetToDosByProject(int projectId)
+        {
+            return _toDoList.Where(t => t.ProjectId == projectId).ToList();
+        }
+
+        public void UpdateProjectCompletion(Project? project)
+        {
+            if (project == null || project.ToDoIds.Count == 0)
+            {
+                if (project != null) project.CompletePercent = 0;
+                return;
+            }
+
+            var todos = _toDoList.Where(t => project.ToDoIds.Contains(t.Id)).ToList();
+            double completed = todos.Count(t => t.IsCompleted);
+            project.CompletePercent = (completed / project.ToDoIds.Count) * 100;
+        }
     }
 }
