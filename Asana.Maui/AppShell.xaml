@@ -9,11 +9,11 @@
     Title="Asana.Maui">
 
     <ShellContent
-        Title="Home"
+        Title="                                                Welcome to Fake Asana!"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
     <ShellContent
-        Title="ToDo Details"
+        Title="ToDo Details Page"
         ContentTemplate="{DataTemplate views:ToDoDetailView}"
         Route="ToDoDetails" />
 

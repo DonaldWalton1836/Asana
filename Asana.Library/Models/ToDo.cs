@@ -21,6 +21,8 @@ namespace Asana.Library.Models
 
         public int ProjectId { get; set; }
 
+        public DateTime DueDate { get; set; }
+
 
 
         public int Id { get; set; }

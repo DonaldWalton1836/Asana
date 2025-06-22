@@ -20,13 +20,27 @@ namespace Asana.Maui.ViewModels
             _toDoSvc = ToDoServiceProxy.Current;
         }
 
-        public ToDo SelectedToDo { get; set; }
+        private ToDo selectedToDo;
+        public ToDo SelectedToDo
+        {
+            get => selectedToDo;
+            set
+            {
+                if (selectedToDo != value)
+                {
+                    selectedToDo = value;
+                    NotifyPropertyChanged();
+                    NotifyPropertyChanged(nameof(SelectedToDoId));
+                }
+            }
+        }
+
         public ObservableCollection<ToDo> ToDos
         {
             get
             {
                 var toDos = _toDoSvc.ToDos;
-                if(!IsShowCompleted)
+                if (!IsShowCompleted)
                 {
                     toDos = _toDoSvc.ToDos.Where(t => !t?.IsCompleted ?? false).ToList();
                 }
@@ -34,15 +48,12 @@ namespace Asana.Maui.ViewModels
             }
         }
 
-        public int SelectedToDoId => SelectedToDo.Id;
+        public int SelectedToDoId => SelectedToDo?.Id ?? 0;
 
         private bool isShowCompleted;
-        public bool IsShowCompleted { 
-            get
-            {
-                return isShowCompleted;
-            }
-
+        public bool IsShowCompleted
+        {
+            get => isShowCompleted;
             set
             {
                 if (isShowCompleted != value)
@@ -56,16 +67,30 @@ namespace Asana.Maui.ViewModels
         public void DeleteToDo()
         {
             if (SelectedToDo == null)
-            {
                 return;
-            }
 
-            ToDoServiceProxy.Current.DeleteToDo(SelectedToDo);
+            _toDoSvc.DeleteToDo(SelectedToDo);
+            SelectedToDo = null;
             NotifyPropertyChanged(nameof(ToDos));
         }
 
         public void RefreshPage()
         {
+            NotifyPropertyChanged(nameof(ToDos));
+        }
+
+        public void AddNewToDo(string name, string description, int? priority, bool isCompleted, DateTime dueDate)
+        {
+            var newToDo = new ToDo
+            {
+                Name = name,
+                Description = description,
+                Priority = priority,
+                IsCompleted = isCompleted,
+                DueDate = dueDate
+            };
+
+            _toDoSvc.AddOrUpdate(newToDo);
             NotifyPropertyChanged(nameof(ToDos));
         }
 
