@@ -10,32 +10,44 @@
     <VerticalStackLayout Padding="20" Spacing="15">
         <Label Text="Current ToDo Details" FontSize="30" FontAttributes="Bold" HorizontalOptions="Center" />
 
-        <!-- ID and Name -->
+        <!-- This is the ID and Name Setup-->
         <Grid ColumnSpacing="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
+                
                 <ColumnDefinition Width="*"/>
+                
             </Grid.ColumnDefinitions>
             <Label Text="Id:" Grid.Column="0" VerticalOptions="Center"/>
+            
             <Entry Text="{Binding Model.Id}" Grid.Column="1" IsReadOnly="True" />
         </Grid>
 
         <Grid ColumnSpacing="10">
             <Grid.ColumnDefinitions>
+                
                 <ColumnDefinition Width="Auto"/>
+                
                 <ColumnDefinition Width="*"/>
+                
             </Grid.ColumnDefinitions>
+            
             <Label Text="Name:" Grid.Column="0" VerticalOptions="Center"/>
+            
             <Entry Text="{Binding Model.Name}" Grid.Column="1" />
         </Grid>
 
-        <!-- Description -->
+        <!-- This is the setup for the description -->
         <Grid ColumnSpacing="10">
             <Grid.ColumnDefinitions>
+                
                 <ColumnDefinition Width="Auto"/>
+                
                 <ColumnDefinition Width="*"/>
+                
             </Grid.ColumnDefinitions>
             <Label Text="Description:" Grid.Column="0" VerticalOptions="Center"/>
+            
             <Entry Text="{Binding Model.Description}" Grid.Column="1" />
         </Grid>
 
@@ -43,27 +55,36 @@
         <Grid ColumnSpacing="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
+                
                 <ColumnDefinition Width="Auto"/>
+                
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <CheckBox IsChecked="{Binding Model.IsCompleted}" Grid.Column="0" />
+            
             <Label Text="Priority:" Grid.Column="1" VerticalOptions="Center" />
+            
             <Picker ItemsSource="{Binding Priorities}" SelectedItem="{Binding SelectedPriority}" Grid.Column="2" />
         </Grid>
 
-        <!-- Due Date -->
+        <!-- This is the Due Date Field -->
         <Grid ColumnSpacing="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
+                
                 <ColumnDefinition Width="*"/>
+                
             </Grid.ColumnDefinitions>
             <Label Text="Due Date:" Grid.Column="0" VerticalOptions="Center"/>
+            
             <DatePicker Date="{Binding Model.DueDate}" Grid.Column="1" />
         </Grid>
 
-        <!-- Action Buttons -->
+        <!-- These are the action button -->
         <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
+            
             <Button Text="OK" Clicked="OkClicked" BackgroundColor="Green" TextColor="White" />
+            
             <Button Text="Cancel" Clicked="CancelClicked" BackgroundColor="Gray" TextColor="White" />
         </HorizontalStackLayout>
     </VerticalStackLayout>

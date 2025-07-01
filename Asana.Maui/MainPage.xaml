@@ -9,12 +9,12 @@
         <VerticalStackLayout Padding="30,0" Spacing="25">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="10*"/>
-                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Toolbar -->
+                <!-- This is the Toolbar setup-->
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -24,11 +24,14 @@
                     <CheckBox Grid.Column="1" Margin="5" IsChecked="{Binding IsShowCompleted}"/>
                 </Grid>
 
-                <!-- ToDo List -->
+                <!-- This is the ToDo List Setup -->
                 <ListView
                     Grid.Row="1"
                     ItemsSource="{Binding ToDos}"
                     SelectedItem="{Binding SelectedToDo, Mode=TwoWay}">
+                    <ListView.Header>
+                        <Label Text="{Binding ToDos.Count}" TextColor="Blue" FontAttributes="Bold" />
+                    </ListView.Header>
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
@@ -36,58 +39,82 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox IsChecked="{Binding IsCompleted}" Grid.Column="0"/>
                                     <StackLayout Grid.Column="1" Padding="5">
                                         <Label Text="{Binding Name}" TextColor="Red"/>
-                                        <Label Text="{Binding Description}"/>
+                                        <Label Text="{Binding Description}" FontSize="Small"/>
                                     </StackLayout>
-                                    
                                 </Grid>
                             </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
 
-                <!-- Inputs and Buttons -->
-                <!-- Input Form Section -->
-                <Frame Grid.Row="2" Padding="15" CornerRadius="10" BorderColor="LightGray" BackgroundColor="#f5f5f5">
-                    <VerticalStackLayout Spacing="10">
+                <!-- Input Form and Project Sections! -->
+                <ScrollView Grid.Row="2">
+                    <VerticalStackLayout Spacing="25">
 
-                        <Label Text="Task Name:" FontAttributes="Bold"/>
-                        <Entry x:Name="NameEntry" Placeholder="Enter task name"/>
+                        <!-- ToDo Input Form Input Fields-->
+                        <Frame Padding="15" CornerRadius="10" BorderColor="LightGray" BackgroundColor="#f5f5f5">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="Task Name:" FontAttributes="Bold"/>
+                                <Entry x:Name="NameEntry" Placeholder="Enter task name"/>
 
-                        <Label Text="Description:" FontAttributes="Bold"/>
-                        <Entry x:Name="DescriptionEntry" Placeholder="Enter task description"/>
+                                <Label Text="Description:" FontAttributes="Bold"/>
+                                <Entry x:Name="DescriptionEntry" Placeholder="Enter task description"/>
 
-                        <Label Text="Is Completed?" FontAttributes="Bold"/>
-                        <CheckBox x:Name="IsCompletedCheckBox"/>
+                                <Label Text="Is Completed?" FontAttributes="Bold"/>
+                                <CheckBox x:Name="IsCompletedCheckBox"/>
 
-                        <Label Text="Priority:" FontAttributes="Bold"/>
-                        <Picker x:Name="PriorityPicker">
-                            <Picker.ItemsSource>
-                                <x:Array Type="{x:Type x:String}">
-                                    <x:String>1 - Very Low</x:String>
-                                    <x:String>2 - Low</x:String>
-                                    <x:String>3 - Medium</x:String>
-                                    <x:String>4 - High</x:String>
-                                    <x:String>5 - Critical</x:String>
-                                </x:Array>
-                            </Picker.ItemsSource>
-                        </Picker>
+                                <Label Text="Priority:" FontAttributes="Bold"/>
+                                <Picker x:Name="PriorityPicker">
+                                    <Picker.ItemsSource>
+                                        <x:Array Type="{x:Type x:String}">
+                                            <x:String>1 - Very Low</x:String>
+                                            <x:String>2 - Low</x:String>
+                                            <x:String>3 - Medium</x:String>
+                                            <x:String>4 - High</x:String>
+                                            <x:String>5 - Critical</x:String>
+                                        </x:Array>
+                                    </Picker.ItemsSource>
+                                </Picker>
 
-                        <Label Text="Due Date:" FontAttributes="Bold"/>
-                        <DatePicker x:Name="DueDatePicker"/>
+                                <Label Text="Due Date:" FontAttributes="Bold"/>
+                                <DatePicker x:Name="DueDatePicker"/>
 
-                        <HorizontalStackLayout Spacing="10" Padding="0,10,0,0">
-                            <Button Text="Add New ToDo" Clicked="AddNewClicked" HorizontalOptions="FillAndExpand"/>
-                            <Button Text="Edit Selected ToDo" Clicked="EditClicked" HorizontalOptions="FillAndExpand"/>
-                            <Button Text="Delete Selected ToDo" Clicked="DeleteClicked" HorizontalOptions="FillAndExpand"/>
-                        </HorizontalStackLayout>
+                                <HorizontalStackLayout Spacing="10" Padding="0,10,0,0">
+                                    <Button Text="Add New ToDo" Clicked="AddNewClicked" HorizontalOptions="FillAndExpand"/>
+                                    <Button Text="Edit Selected ToDo" Clicked="EditClicked" HorizontalOptions="FillAndExpand"/>
+                                    <Button Text="Delete Selected ToDo" Clicked="DeleteClicked" HorizontalOptions="FillAndExpand"/>
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <!-- Project Management Setup -->
+                        <Frame Padding="15" CornerRadius="10" BorderColor="LightGray" BackgroundColor="#e8f0fe">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="Project Name:" FontAttributes="Bold"/>
+                                <Entry x:Name="ProjectNameEntry" Placeholder="Enter project name"/>
+
+                                <Label Text="Project Description:" FontAttributes="Bold"/>
+                                <Entry x:Name="ProjectDescriptionEntry" Placeholder="Enter project description"/>
+
+                                <HorizontalStackLayout Spacing="10">
+                                    <Button Text="Add Project" Clicked="AddProjectClicked" HorizontalOptions="FillAndExpand"/>
+                                    <Button Text="Delete Selected Project" Clicked="DeleteProjectClicked" HorizontalOptions="FillAndExpand"/>
+                                </HorizontalStackLayout>
+
+                                <Label Text="Select Project:" FontAttributes="Bold"/>
+                                <Picker x:Name="ProjectPicker"
+                                        ItemsSource="{Binding Projects}"
+                                        ItemDisplayBinding="{Binding Name}"
+                                        SelectedItem="{Binding SelectedProject}" />
+                            </VerticalStackLayout>
+                        </Frame>
 
                     </VerticalStackLayout>
-                </Frame>
+                </ScrollView>
 
             </Grid>
         </VerticalStackLayout>

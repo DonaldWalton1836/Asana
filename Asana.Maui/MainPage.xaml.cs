@@ -9,22 +9,30 @@ namespace Asana.Maui
         public MainPage()
         {
             InitializeComponent();
+
             BindingContext = new MainPageViewModel();
+
         }
 
         private void AddNewClicked(object sender, EventArgs e)
         {
             var vm = BindingContext as MainPageViewModel;
+
             if (vm == null) return;
 
             var name = NameEntry.Text ?? "";
+
             var description = DescriptionEntry.Text ?? "";
+
             var isCompleted = IsCompletedCheckBox.IsChecked;
+
             var dueDate = DueDatePicker.Date;
 
-            // Parse priority from Picker selection
+            /*This will help parse the priority*/
             var priorityText = PriorityPicker.SelectedItem as string;
+
             int priority = 1;
+
             if (!string.IsNullOrEmpty(priorityText) && int.TryParse(priorityText.Split('-')[0].Trim(), out int parsed))
             {
                 priority = parsed;
@@ -37,6 +45,7 @@ namespace Asana.Maui
         private void EditClicked(object sender, EventArgs e)
         {
             var selectedId = (BindingContext as MainPageViewModel)?.SelectedToDoId ?? 0;
+
             Shell.Current.GoToAsync($"//ToDoDetails?toDoId={selectedId}");
         }
 
@@ -54,6 +63,36 @@ namespace Asana.Maui
         {
 
         }
+        private void AddProjectClicked(object sender, EventArgs e)
+        {
+            var name = ProjectNameEntry.Text ?? "";
+
+            var desc = ProjectDescriptionEntry.Text ?? "";
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                (BindingContext as MainPageViewModel)?.AddProject(name, desc);
+
+                ProjectNameEntry.Text = "";
+
+                ProjectDescriptionEntry.Text = "";
+
+            }
+        }
+
+        private void DeleteProjectClicked(object sender, EventArgs e)
+        {
+            var selected = (BindingContext as MainPageViewModel)?.SelectedProject;
+            if (selected != null)
+            {
+
+                (BindingContext as MainPageViewModel)?.DeleteProject(selected.Id);
+
+            }
+        }
+
+
+
 
 
     }

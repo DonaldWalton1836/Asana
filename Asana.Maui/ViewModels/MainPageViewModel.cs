@@ -15,6 +15,20 @@ namespace Asana.Maui.ViewModels
     {
         private ToDoServiceProxy _toDoSvc;
 
+        public ObservableCollection<Project> Projects => new(_toDoSvc.GetAllProjects());
+
+        private Project selectedProject;
+        public Project SelectedProject
+        {
+            get => selectedProject;
+            set
+            {
+                selectedProject = value;
+                NotifyPropertyChanged();
+                LoadToDos();
+            }
+        }
+
         public MainPageViewModel()
         {
             _toDoSvc = ToDoServiceProxy.Current;
@@ -29,23 +43,39 @@ namespace Asana.Maui.ViewModels
                 if (selectedToDo != value)
                 {
                     selectedToDo = value;
+
+
                     NotifyPropertyChanged();
+
+
                     NotifyPropertyChanged(nameof(SelectedToDoId));
                 }
             }
         }
 
+        private ObservableCollection<ToDo> toDos = new();
+
         public ObservableCollection<ToDo> ToDos
         {
-            get
+            get => toDos;
+
+            set
             {
-                var toDos = _toDoSvc.ToDos;
-                if (!IsShowCompleted)
-                {
-                    toDos = _toDoSvc.ToDos.Where(t => !t?.IsCompleted ?? false).ToList();
-                }
-                return new ObservableCollection<ToDo>(toDos);
+                toDos = value;
+
+                NotifyPropertyChanged();
             }
+        }
+        private void LoadToDos()
+        {
+            var result = SelectedProject == null
+                ? _toDoSvc.ToDos
+
+                : _toDoSvc.GetToDosByProject(SelectedProject.Id);
+
+            if (!IsShowCompleted){result = result.Where(t => !t?.IsCompleted ?? false).ToList();}
+
+            ToDos = new ObservableCollection<ToDo>(result);
         }
 
         public int SelectedToDoId => SelectedToDo?.Id ?? 0;
@@ -54,12 +84,15 @@ namespace Asana.Maui.ViewModels
         public bool IsShowCompleted
         {
             get => isShowCompleted;
+
             set
             {
                 if (isShowCompleted != value)
                 {
+
                     isShowCompleted = value;
-                    NotifyPropertyChanged(nameof(ToDos));
+
+                    LoadToDos();
                 }
             }
         }
@@ -71,12 +104,13 @@ namespace Asana.Maui.ViewModels
 
             _toDoSvc.DeleteToDo(SelectedToDo);
             SelectedToDo = null;
-            NotifyPropertyChanged(nameof(ToDos));
+            LoadToDos(); // this will refresh the new list.
         }
-
         public void RefreshPage()
         {
+
             NotifyPropertyChanged(nameof(ToDos));
+
         }
 
         public void AddNewToDo(string name, string description, int? priority, bool isCompleted, DateTime dueDate)
@@ -87,18 +121,42 @@ namespace Asana.Maui.ViewModels
                 Description = description,
                 Priority = priority,
                 IsCompleted = isCompleted,
-                DueDate = dueDate
+                DueDate = dueDate,
+                ProjectId = SelectedProject != null ? SelectedProject.Id : 0
             };
 
             _toDoSvc.AddOrUpdate(newToDo);
-            NotifyPropertyChanged(nameof(ToDos));
+
+            LoadToDos();
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
+
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
         }
+
+        public void AddProject(string name, string description)
+        {
+
+            _toDoSvc.AddProject(name, description);
+
+            NotifyPropertyChanged(nameof(Projects));
+
+        }
+
+        public void DeleteProject(int id)
+        {
+            _toDoSvc.DeleteProject(id);
+
+            NotifyPropertyChanged(nameof(Projects));
+
+            LoadToDos();
+
+        }
+
     }
 }

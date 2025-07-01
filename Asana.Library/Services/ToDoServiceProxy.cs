@@ -77,12 +77,15 @@ namespace Asana.Library.Services
             if (isShowCompleted)
             {
                 ToDos.ForEach(Console.WriteLine);
+
             }
             else
             {
                 ToDos.Where(t => (t != null) && !(t.IsCompleted))
                      .ToList()
+
                      .ForEach(Console.WriteLine);
+
             }
         }
 
@@ -107,14 +110,16 @@ namespace Asana.Library.Services
             {
                 _toDoList.Remove(todo);
                 var project = _projects.FirstOrDefault(p => p.Id == todo.ProjectId);
+
                 project?.ToDoIds.Remove(id);
+
                 UpdateProjectCompletion(project);
                 return true;
             }
             return false;
         }
 
-        // === Project Functionality Below ===
+        //This is the project functions below
 
         private List<Project> _projects = new();
         private int nextProjectKey => _projects.Any() ? _projects.Max(p => p.Id) + 1 : 1;
@@ -127,17 +132,22 @@ namespace Asana.Library.Services
                 Name = name,
                 Description = description
             };
+
             _projects.Add(project);
+
             return project;
         }
 
         public bool DeleteProject(int id)
         {
             var project = _projects.FirstOrDefault(p => p.Id == id);
+
             if (project != null)
             {
                 _projects.Remove(project);
+
                 _toDoList.RemoveAll(t => t.ProjectId == id);
+
                 return true;
             }
             return false;
@@ -151,6 +161,7 @@ namespace Asana.Library.Services
             if (project != null)
             {
                 project.Name = updatedProject.Name;
+
                 project.Description = updatedProject.Description;
                 return true;
             }
@@ -167,12 +178,16 @@ namespace Asana.Library.Services
             if (project == null || project.ToDoIds.Count == 0)
             {
                 if (project != null) project.CompletePercent = 0;
+
                 return;
             }
 
             var todos = _toDoList.Where(t => project.ToDoIds.Contains(t.Id)).ToList();
+
             double completed = todos.Count(t => t.IsCompleted);
+
             project.CompletePercent = (completed / project.ToDoIds.Count) * 100;
+
         }
     }
 }
