@@ -14,7 +14,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- This is the Toolbar setup-->
+                <!-- This is the Toolbar setup -->
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -55,8 +55,8 @@
                 <ScrollView Grid.Row="2">
                     <VerticalStackLayout Spacing="25">
 
-                        <!-- ToDo Input Form Input Fields-->
-                        <Frame Padding="15" CornerRadius="10" BorderColor="LightGray" BackgroundColor="#f5f5f5">
+                        <!--ToDo Input Form Input Fields -->
+                        <Frame Padding="15" CornerRadius="10" >
                             <VerticalStackLayout Spacing="10">
                                 <Label Text="Task Name:" FontAttributes="Bold"/>
                                 <Entry x:Name="NameEntry" Placeholder="Enter task name"/>
@@ -91,8 +91,8 @@
                             </VerticalStackLayout>
                         </Frame>
 
-                        <!-- Project Management Setup -->
-                        <Frame Padding="15" CornerRadius="10" BorderColor="LightGray" BackgroundColor="#e8f0fe">
+                        <!-- The Project Management Setup -->
+                        <Frame Padding="15" CornerRadius="10" >
                             <VerticalStackLayout Spacing="10">
                                 <Label Text="Project Name:" FontAttributes="Bold"/>
                                 <Entry x:Name="ProjectNameEntry" Placeholder="Enter project name"/>
