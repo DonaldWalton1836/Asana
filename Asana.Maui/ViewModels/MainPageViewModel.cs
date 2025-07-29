@@ -75,7 +75,7 @@ namespace Asana.Maui.ViewModels
 
             if (!IsShowCompleted){result = result.Where(t => !t?.IsCompleted ?? false).ToList();}
 
-            ToDos = new ObservableCollection<ToDo>(result);
+            FilterToDos();
         }
 
         public int SelectedToDoId => SelectedToDo?.Id ?? 0;
@@ -96,6 +96,34 @@ namespace Asana.Maui.ViewModels
                 }
             }
         }
+        private bool isSortedByName;
+        public bool IsSortedByName
+        {
+            get => isSortedByName;
+            set
+            {
+                if (isSortedByName != value)
+                {
+                    isSortedByName = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        private string searchText;
+        public string SearchText
+        {
+            get => searchText;
+            set
+            {
+                if (searchText != value)
+                {
+                    searchText = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
 
         public void DeleteToDo()
         {
@@ -104,7 +132,7 @@ namespace Asana.Maui.ViewModels
 
             _toDoSvc.DeleteToDo(SelectedToDo);
             SelectedToDo = null;
-            LoadToDos(); // this will refresh the new list.
+            LoadToDos(); // this will help refresh the new list.
         }
         public void RefreshPage()
         {
@@ -145,6 +173,25 @@ namespace Asana.Maui.ViewModels
             _toDoSvc.AddProject(name, description);
 
             NotifyPropertyChanged(nameof(Projects));
+
+        }
+        public void FilterToDos()
+        {
+            var baseList = SelectedProject == null
+                ? _toDoSvc.ToDos
+                : _toDoSvc.GetToDosByProject(SelectedProject.Id);
+
+            if (!IsShowCompleted)
+                baseList = baseList.Where(t => !t.IsCompleted).ToList();
+
+            if (!string.IsNullOrWhiteSpace(SearchText))
+                baseList = baseList.Where(t =>
+                    t.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                    t.Description.Contains(SearchText, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (IsSortedByName)
+                baseList = baseList.OrderBy(t => t.Name).ToList();
+
+            ToDos = new ObservableCollection<ToDo>(baseList);
 
         }
 

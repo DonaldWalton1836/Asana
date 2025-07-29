@@ -51,7 +51,7 @@
             <Entry Text="{Binding Model.Description}" Grid.Column="1" />
         </Grid>
 
-        <!-- Is Completed and Priority -->
+        <!-- This is the IsCompleted and the Priorties -->
         <Grid ColumnSpacing="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -80,7 +80,7 @@
             <DatePicker Date="{Binding Model.DueDate}" Grid.Column="1" />
         </Grid>
 
-        <!-- These are the action button -->
+        <!-- These are the action buttons -->
         <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
             
             <Button Text="OK" Clicked="OkClicked" BackgroundColor="Green" TextColor="White" />

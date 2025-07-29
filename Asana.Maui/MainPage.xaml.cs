@@ -90,6 +90,14 @@ namespace Asana.Maui
 
             }
         }
+        private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+        {
+            (BindingContext as MainPageViewModel)?.FilterToDos();
+        }
+        private void OnSortChanged(object sender, CheckedChangedEventArgs e)
+        {
+            (BindingContext as MainPageViewModel)?.FilterToDos();
+        }
 
 
 

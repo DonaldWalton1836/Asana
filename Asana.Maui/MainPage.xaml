@@ -18,11 +18,27 @@
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
-                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Label Grid.Column="0" Text="Show Completed Tasks:"/>
                     <CheckBox Grid.Column="1" Margin="5" IsChecked="{Binding IsShowCompleted}"/>
-                </Grid>
+                    <!-- This helps search for the ToDos -->
+                    <SearchBar Grid.Column="2"
+                         Placeholder="Search the todos"
+                        Text="{Binding SearchText}"
+                        TextChanged="OnSearchTextChanged"
+                        VerticalOptions="Center"/>
+
+                    <!-- This helps with sorting alphabetically -->
+                    <Label Grid.Column="3" Text="Sort Alphabetically:" VerticalOptions="Center" />
+                    <CheckBox Grid.Column="4"
+                    IsChecked="{Binding IsSortedByName}"
+                    CheckedChanged="OnSortChanged"
+                    VerticalOptions="Center"/>
+                    </Grid>
 
                 <!-- This is the ToDo List Setup -->
                 <ListView
@@ -51,11 +67,11 @@
                     </ListView.ItemTemplate>
                 </ListView>
 
-                <!-- Input Form and Project Sections! -->
+                <!-- This where you input the information for the projects and ToDos -->
                 <ScrollView Grid.Row="2">
                     <VerticalStackLayout Spacing="25">
 
-                        <!--ToDo Input Form Input Fields -->
+                        <!-- This is the input form for the ToDos -->
                         <Frame Padding="15" CornerRadius="10" >
                             <VerticalStackLayout Spacing="10">
                                 <Label Text="Task Name:" FontAttributes="Bold"/>
@@ -91,7 +107,7 @@
                             </VerticalStackLayout>
                         </Frame>
 
-                        <!-- The Project Management Setup -->
+                        <!-- This is the setup for the projects -->
                         <Frame Padding="15" CornerRadius="10" >
                             <VerticalStackLayout Spacing="10">
                                 <Label Text="Project Name:" FontAttributes="Bold"/>
